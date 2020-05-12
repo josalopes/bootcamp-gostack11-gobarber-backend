@@ -9,6 +9,9 @@
 
 # production
 /build
+tmp/*
+!tmp/.gitkeep
+/temp
 
 # misc
 .DS_Store
