@@ -24,8 +24,6 @@
         "prettier"
     ],
     "rules": {
-    },
-    "rules": {
       "prettier/prettier": "error",
       "class-methods-use-this": "off",
       "@typescript-eslint/camelcase": "off",
