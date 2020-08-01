@@ -24,7 +24,7 @@ class AuthenticateUserService {
     private usersRepository: IUserRepository,
 
     @inject('HashProvider')
-    private fakeHashProvider: IHashProvider,
+    private hashProvider: IHashProvider,
   ) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
@@ -34,7 +34,7 @@ class AuthenticateUserService {
       throw new AppError('Incorrect email/password combination.', 401);
     }
 
-    const passwordMatched = await this.fakeHashProvider.compareHash(
+    const passwordMatched = await this.hashProvider.compareHash(
       password,
       user.password,
     );
@@ -43,6 +43,7 @@ class AuthenticateUserService {
     }
 
     const { secret, expiresIn } = authConfig.jwt;
+
     const token = sign({}, secret, {
       subject: user.id,
       expiresIn,

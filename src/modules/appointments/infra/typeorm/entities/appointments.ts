@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import User from '@modules/users/infra/typeorm/entities/users';
+import User from '@modules/users/infra/typeorm/entities/User';
 
 /**
  * Um para Um (OneToOne)
@@ -16,7 +16,7 @@ import User from '@modules/users/infra/typeorm/entities/users';
  * Muitos para muitos (MAnyToMany)
  */
 
-@Entity('appointments')
+@Entity('appointment')
 class Appointments {
   @PrimaryGeneratedColumn('uuid')
   id: string;
