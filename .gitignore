@@ -12,6 +12,8 @@
 tmp/*
 !tmp/.gitkeep
 /temp
+.env
+ormconfig.json
 
 # misc
 .DS_Store

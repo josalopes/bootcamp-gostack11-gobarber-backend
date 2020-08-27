@@ -8,6 +8,7 @@
      "target": "es5",
      "esModuleInterop": true,
      "baseUrl": "./src",
+     "allowJs": true,
      "paths": {
        "@modules/*": ["modules/*"],
        "@config/*": ["config/*"],
