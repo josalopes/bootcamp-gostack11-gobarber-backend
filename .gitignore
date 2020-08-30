@@ -14,6 +14,7 @@ tmp/*
 /temp
 .env
 ormconfig.json
+dist
 
 # misc
 .DS_Store
