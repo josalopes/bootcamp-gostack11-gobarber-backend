@@ -1,9 +1,12 @@
+import { getRepository, Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { injectable, inject } from 'tsyringe';
 
 import IUserRepository from '@modules/users/repositories/IUsersRepository';
+import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
 import User from '@modules/users/infra/typeorm/entities/User';
+import UserToken from '@modules/users/infra/typeorm/entities/UserToken';
 import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppErrors';
 
@@ -19,13 +22,17 @@ interface IResponse {
 
 @injectable()
 class AuthenticateUserService {
+  private userTokensRepository: Repository<UserToken>;
+
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUserRepository,
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
-  ) {}
+  ) {
+    this.userTokensRepository = getRepository(UserToken);
+  }
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
@@ -48,6 +55,8 @@ class AuthenticateUserService {
       subject: user.id,
       expiresIn,
     });
+
+    // this.userTokensRepository.create({ token, user.id });
 
     return {
       user,

@@ -17,10 +17,12 @@ class UsersRepository implements IUsersRepository {
     return findUser;
   }
 
-  public findAllProviders({ except_user_id }: IFindAllProvidersDTO): Promise<User[]> {
-    let users = this.users;
+  public findAllProviders({
+    except_user_id,
+  }: IFindAllProvidersDTO): Promise<User[]> {
+    let { users } = this;
 
-    if(except_user_id) {
+    if (except_user_id) {
       users = this.users.filter(user => user.id !== except_user_id);
     }
 

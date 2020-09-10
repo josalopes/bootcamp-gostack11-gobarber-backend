@@ -7,8 +7,8 @@ import IUserTokensRepository from '@modules/users/repositories/IUserTokensReposi
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 interface IRequest {
-  token: string;
   password: string;
+  token: string;
 }
 
 @injectable()
@@ -24,7 +24,7 @@ class ResetPasswordService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ token, password }: IRequest): Promise<void> {
+  public async execute({ password, token }: IRequest): Promise<void> {
     const userToken = await this.userTokensRepository.findByToken(token);
 
     if (!userToken) {
@@ -35,7 +35,7 @@ class ResetPasswordService {
 
     if (!user) {
       throw new AppError('User does not exists.');
-    };
+    }
 
     const tokenCreatedAt = userToken.created_at;
     const compareDate = addHours(tokenCreatedAt, 2);
@@ -45,6 +45,8 @@ class ResetPasswordService {
     }
 
     user.password = await this.hashProvider.generateHash(password);
+
+    await this.usersRepository.save(user);
   }
 }
 
