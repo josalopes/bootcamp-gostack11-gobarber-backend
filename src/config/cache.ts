@@ -5,7 +5,7 @@ interface ICacheConfig {
 
   config: {
     redis: RedisOptions;
-  }
+  };
 }
 
 export default {

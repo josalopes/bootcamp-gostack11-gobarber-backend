@@ -1,8 +1,8 @@
 import { getRepository, Repository } from 'typeorm';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
-import UserToken from '../entities/UserToken';
 import ICreateUserTokenDTO from '@modules/users/dtos/ICreateUserTokenDTO';
+import UserToken from '../entities/UserToken';
 
 class UserTokensRepository implements IUserTokensRepository {
   private users: User[];
@@ -30,21 +30,28 @@ class UserTokensRepository implements IUserTokensRepository {
       user_id,
     });
 
-    this.save(userToken);
+    // this.save(userToken);
 
-    // await this.ormRepository.save(userToken);
+    await this.ormRepository.save(userToken);
 
     return userToken;
   }
 
-  public async create({ token, user_id }: ICreateUserTokenDTO): Promise<void> {
-    // console.log(token, user_id);
+  public async create({
+    // token,
+    user_id,
+  }: ICreateUserTokenDTO): Promise<UserToken> {
+    // this.generate(user_id);
+
     const userToken = this.ormRepository.create({
-      token,
+      // token,
       user_id,
     });
 
-    await this.save(userToken);
+    await this.ormRepository.save(userToken);
+    // await this.save(userToken);
+
+    return userToken;
   }
 }
 

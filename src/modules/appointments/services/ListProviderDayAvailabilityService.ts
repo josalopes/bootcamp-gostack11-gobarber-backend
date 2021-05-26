@@ -2,7 +2,6 @@ import IAppointmentsRepository from '@modules/appointments/repositories/IAppoint
 import { injectable, inject } from 'tsyringe';
 import { getHours, isAfter } from 'date-fns';
 
-
 interface IRequest {
   provider_id: string;
   day: number;
@@ -28,7 +27,8 @@ class ListProviderDayAvailabilityService {
     year,
     day,
   }: IRequest): Promise<IResponse> {
-    const appointments = await this.appointmentsRepository.findAllDayFromProvider({
+    const appointments = await this.appointmentsRepository.findAllDayFromProvider(
+      {
         provider_id,
         year,
         month,
@@ -56,7 +56,7 @@ class ListProviderDayAvailabilityService {
         hour,
         available: !hasAppointmentInHour && isAfter(compareDate, currentDate),
       }
-    })
+    });
 
     return availability;
   }

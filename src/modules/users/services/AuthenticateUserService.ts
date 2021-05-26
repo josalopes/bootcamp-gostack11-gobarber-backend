@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { getRepository, Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { injectable, inject } from 'tsyringe';
@@ -25,6 +26,9 @@ class AuthenticateUserService {
   private userTokensRepository: Repository<UserToken>;
 
   constructor(
+    // @inject('UsersTokensRepository')
+    // private usersTokensRepository: IUserTokensRepository,
+
     @inject('UsersRepository')
     private usersRepository: IUserRepository,
 
@@ -56,8 +60,12 @@ class AuthenticateUserService {
       expiresIn,
     });
 
-    // this.userTokensRepository.create({ token, user.id });
+    this.userTokensRepository.create({
+      // token,
+      user_id: user.id,
+    });
 
+    // console.log(userToken);
     return {
       user,
       token,

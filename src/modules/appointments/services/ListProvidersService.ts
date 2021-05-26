@@ -1,3 +1,4 @@
+import { classToClass } from 'class-transformer';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { injectable, inject } from 'tsyringe';
 
@@ -23,15 +24,26 @@ class ListProvidersService {
   ) {}
 
   public async execute({ user_id }: IRequest): Promise<User[]> {
-    let users = this.cacheProvider.recover<User[]>(`provider-list:${user_id}`);
+    let users: User[] | PromiseLike<User[]> = [];
 
-    if (!users) {
-      users = await this.usersRepository.findAllProviders({
-        except_user_id: user_id,
-      });
+    const cachedUsers = this.cacheProvider.recover<User[]>(
+      `provider-list:${user_id}`,
+    );
 
-      await this.cacheProvider.save(`provider-list:${user_id}`, users);
-    }
+    users = await this.usersRepository.findAllProviders({
+      except_user_id: user_id,
+    });
+
+    // if (!cachedUsers) {
+    //   users = await this.usersRepository.findAllProviders({
+    //     except_user_id: user_id,
+    //   });
+
+    //   await this.cacheProvider.save(
+    //     `provider-list:${user_id}`,
+    //     classToClass(users),
+    //   );
+    // }
 
     return users;
   }

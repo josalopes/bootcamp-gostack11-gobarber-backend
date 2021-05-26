@@ -32,7 +32,6 @@ class UpdateProfileService {
     password,
     old_password,
   }: IRequest): Promise<User> {
-
     const user = await this.usersRepository.findById(user_id);
     if (!user) {
       throw new AppError('Usuário não encontrado.');
@@ -57,7 +56,7 @@ class UpdateProfileService {
       );
 
       if (!checkOldPassword) {
-        throw new AppError('Senha antiga não confere.');
+        throw new AppError('Senha anterior não confere.');
       }
     }
 

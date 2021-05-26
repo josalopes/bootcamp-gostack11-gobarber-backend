@@ -22,6 +22,7 @@ class UpdateUserAvatarService {
 
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
     const user = await this.usersRepository.findById(user_id);
+
     if (!user) {
       throw new AppError('Only authenticated users can change avatar', 401);
     }
@@ -32,6 +33,7 @@ class UpdateUserAvatarService {
 
     const filename = await this.storageProvider.saveFile(avatarFilename);
     user.avatar = filename;
+    console.log('aqui:', user);
     await this.usersRepository.save(user);
     return user;
   }
