@@ -10,7 +10,7 @@ class DiskStorageProvider implements IStorageProvider {
 
     await fs.promises.rename(oldFilename, newFilename);
     const newFile = `${uploadConfig.uploadsFolder}/${file}`;
-    return newFilename;
+    return newFile;
   }
 
   public async deleteFile(file: string): Promise<void> {

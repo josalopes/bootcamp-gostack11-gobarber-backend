@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
-import { getRepository, Repository } from 'typeorm';
+// import { getRepository, Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { injectable, inject } from 'tsyringe';
 
 import IUserRepository from '@modules/users/repositories/IUsersRepository';
-import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
+// import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
 import User from '@modules/users/infra/typeorm/entities/User';
-import UserToken from '@modules/users/infra/typeorm/entities/UserToken';
+// import UserToken from '@modules/users/infra/typeorm/entities/UserToken';
 import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppErrors';
 
@@ -23,7 +23,7 @@ interface IResponse {
 
 @injectable()
 class AuthenticateUserService {
-  private userTokensRepository: Repository<UserToken>;
+  // private userTokensRepository: Repository<UserToken>;
 
   constructor(
     // @inject('UsersTokensRepository')
@@ -35,7 +35,7 @@ class AuthenticateUserService {
     @inject('HashProvider')
     private hashProvider: IHashProvider,
   ) {
-    this.userTokensRepository = getRepository(UserToken);
+    // this.userTokensRepository = getRepository(UserToken);
   }
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
@@ -60,10 +60,10 @@ class AuthenticateUserService {
       expiresIn,
     });
 
-    this.userTokensRepository.create({
-      // token,
-      user_id: user.id,
-    });
+    // this.userTokensRepository.create({
+    //   token,
+    //   user_id: user.id,
+    // });
 
     // console.log(userToken);
     return {

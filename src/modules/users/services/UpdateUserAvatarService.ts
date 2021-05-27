@@ -33,7 +33,6 @@ class UpdateUserAvatarService {
 
     const filename = await this.storageProvider.saveFile(avatarFilename);
     user.avatar = filename;
-    console.log('aqui:', user);
     await this.usersRepository.save(user);
     return user;
   }
