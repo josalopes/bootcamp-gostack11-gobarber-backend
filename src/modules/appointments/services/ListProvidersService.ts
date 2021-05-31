@@ -1,13 +1,10 @@
-import { classToClass } from 'class-transformer';
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { injectable, inject } from 'tsyringe';
 
-import AppError from '@shared/errors/AppErrors';
-import IUserRepository from '@modules/users/repositories/IUsersRepository';
-import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
 import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
 import User from '@modules/users/infra/typeorm/entities/User';
+import { classToClass } from 'class-transformer';
 
 interface IRequest {
   user_id: string;
@@ -17,33 +14,27 @@ interface IRequest {
 class ListProvidersService {
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUserRepository,
+    private usersRepository: IUsersRepository,
 
     @inject('CacheProvider')
     private cacheProvider: ICacheProvider,
   ) {}
 
   public async execute({ user_id }: IRequest): Promise<User[]> {
-    let users: User[] | PromiseLike<User[]> = [];
-
-    const cachedUsers = this.cacheProvider.recover<User[]>(
-      `provider-list:${user_id}`,
+    let users = await this.cacheProvider.recover<User[]>(
+      `providers-list:${user_id}`,
     );
 
-    users = await this.usersRepository.findAllProviders({
-      except_user_id: user_id,
-    });
+    if (!users) {
+      users = await this.usersRepository.findAllProviders({
+        except_user_id: user_id,
+      });
 
-    // if (!cachedUsers) {
-    //   users = await this.usersRepository.findAllProviders({
-    //     except_user_id: user_id,
-    //   });
-
-    //   await this.cacheProvider.save(
-    //     `provider-list:${user_id}`,
-    //     classToClass(users),
-    //   );
-    // }
+      await this.cacheProvider.save(
+        `providers-list:${user_id}`,
+        classToClass(users),
+      );
+    }
 
     return users;
   }

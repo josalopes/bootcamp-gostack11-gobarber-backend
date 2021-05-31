@@ -27,7 +27,7 @@ class ListProviderDayAvailabilityService {
     year,
     day,
   }: IRequest): Promise<IResponse> {
-    const appointments = await this.appointmentsRepository.findAllDayFromProvider(
+    const appointments = await this.appointmentsRepository.findAllInDayFromProvider(
       {
         provider_id,
         year,
@@ -50,12 +50,12 @@ class ListProviderDayAvailabilityService {
         appointment => getHours(appointment.date) === hour,
       );
 
-      const compareDate = new Date(year, month - 1, hour);
+      const compareDate = new Date(year, month - 1, day, hour);
 
       return {
         hour,
         available: !hasAppointmentInHour && isAfter(compareDate, currentDate),
-      }
+      };
     });
 
     return availability;
