@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import aws, { S3 } from 'aws-sdk';
 import uploadConfig from '@config/upload';
-import IStorageProvider from '../models/IStorageProvider';
 import mime from 'mime';
+import IStorageProvider from '../models/IStorageProvider';
 
 class DiskStorageProvider implements IStorageProvider {
   private client: S3;

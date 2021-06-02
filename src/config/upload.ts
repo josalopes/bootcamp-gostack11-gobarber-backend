@@ -44,7 +44,7 @@ export default {
   config: {
     disk: {},
     aws: {
-      bucket: 'aws-gobarber-2',
+      bucket: 'app-gobarber-josafa',
     },
   },
 } as IUploadConfig;
