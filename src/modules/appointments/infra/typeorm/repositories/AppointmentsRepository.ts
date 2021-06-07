@@ -2,13 +2,14 @@ import { getRepository, Repository, Raw } from 'typeorm';
 
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointmentDTO';
-import IFindAllMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllMonthFromProviderDTO';
-import IFindAllDayFromProviderDTO from '@modules/appointments/dtos/IFindAllDayFromProviderDTO';
+import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
+import IFindAllInDayFromProviderDTO from '@modules/appointments/dtos/IFindAllInDayFromProviderDTO';
 
-import Appointment from '@modules/appointments/infra/typeorm/entities/appointments';
+// import Appointment from '@modules/appointments/infra/typeorm/entities/appointments';
+import Appointment from '../entities/Appointment';
 
 class AppointmentsRepository implements IAppointmentsRepository {
-  private appointments: Appointment[];
+  // private appointments: Appointment[];
 
   private ormRepository: Repository<Appointment>;
 
@@ -31,7 +32,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
     provider_id,
     month,
     year,
-  }: IFindAllMonthFromProviderDTO): Promise<Appointment[]> {
+  }: IFindAllInMonthFromProviderDTO): Promise<Appointment[]> {
     const parsedMonth = String(month).padStart(2, '0');
 
     const appointments = await this.ormRepository.find({
@@ -43,6 +44,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
         ),
       },
     });
+
     return appointments;
   }
 
@@ -51,9 +53,9 @@ class AppointmentsRepository implements IAppointmentsRepository {
     day,
     month,
     year,
-  }: IFindAllDayFromProviderDTO): Promise<Appointment[]> {
-    const parsedMonth = String(month).padStart(2, '0');
+  }: IFindAllInDayFromProviderDTO): Promise<Appointment[]> {
     const parsedDay = String(day).padStart(2, '0');
+    const parsedMonth = String(month).padStart(2, '0');
 
     const appointments = await this.ormRepository.find({
       where: {
@@ -65,6 +67,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
       },
       relations: ['user'],
     });
+
     return appointments;
   }
 
@@ -78,7 +81,6 @@ class AppointmentsRepository implements IAppointmentsRepository {
       user_id,
       date,
     });
-
     await this.ormRepository.save(appointment);
 
     return appointment;
