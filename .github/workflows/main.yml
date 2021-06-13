@@ -1,0 +1,79 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+ 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 12.x
+          
+      # Instalar as dependências NPM/YARN
+      - name: Install dependencies
+        run: yarn
+        
+      # Executar a build
+      - name: Run build
+        run: yarn build
+    
+      # Copiar a pasta dist para dentro do servidor remoto
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}        
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          source: ".,!node_modules"
+          target: "~/node-deploy/app/bootcamp-gostack11-gobarber-backend"
+      
+      # Instalar dependências no servidor remoto
+      - name: Install dependencies on remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}        
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/node-deploy/app/bootcamp-gostack11-gobarber-backend
+            yarn
+            
+      # Executar as migrations do TypeORM
+      - name: Run migrations on remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}        
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/node-deploy/app/bootcamp-gostack11-gobarber-backend
+            ./node_modules/.bin/typeorm migration:run
+          
+      # Restart no servidor NodeJS
+      - name: Run migrations on remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}        
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: pm2 restart gobarber-api
