@@ -34,7 +34,7 @@ jobs:
         run: yarn build
     
       # Copiar a pasta dist para dentro do servidor remoto
-      - name: copy file via ssh password
+      - name: Copy dist to AWS
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
